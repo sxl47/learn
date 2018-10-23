@@ -24,7 +24,7 @@ class JsInterface(object):
         pass
 
     def log(self, log_str, lvl):
-        print log_str
+        print (log_str)
 
 
 def start():
@@ -45,8 +45,8 @@ app.log(a, 0);
             ctx.locals.add = add
             ctx.locals.app = js_interface
             ctx.eval(js)
-            print ctx.locals.f_and(1, 8)
-        except Exception, e:
+            ctx.locals.f_and(1, 8)
+        except Exception as e:
             traceback.print_exc(e)
 
 
