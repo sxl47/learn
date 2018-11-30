@@ -16,12 +16,37 @@ from PyQt4.QtGui import QApplication, QCheckBox
 from PyQt4.QtScript import *
 
 
-def func():
-    app = QApplication(sys.argv)
+class JsEngine(QObject):
+    def __init__(self):
+        QObject.__init__(self)
+        self.engine = QScriptEngine()
+        t = self.engine.newQObject(self)
+        self.engine.globalObject().setProperty("app", t)
 
-    # qt widget test
-    # a = QWidget()
-    # a.show()
+    @QtCore.pyqtSlot(str)
+    def exec_js(self, js):
+        self.engine.evaluate(js)
+
+        if self.engine.hasUncaughtException():
+            line_num = self.engine.uncaughtExceptionLineNumber()
+            sl = self.engine.uncaughtException().toString()
+            print("line:{0},error:{1}".format(line_num, sl))
+
+    @QtCore.pyqtSlot()
+    def exec_js1(self):
+        js = """
+            var c = 123;
+            """
+        self.exec_js(js)
+
+    @QtCore.pyqtSlot(str, str)
+    def log(self, p1, p2):
+        print
+        p1, p2
+
+
+def script_engine_test():
+    app = QApplication(sys.argv)
 
     # 创建js引擎
     engine = QScriptEngine()
@@ -32,7 +57,8 @@ def func():
         QScriptValue(3)
     ]
     three_again = fun.call(QScriptValue(), args)
-    print three_again.toInt32()
+    print
+    three_again.toInt32()
 
     # 创建qt对象到js引擎，js可调用这个实例对象
     button1 = QCheckBox('test---1')
@@ -65,38 +91,29 @@ def func():
     sys.exit(app.exec_())
 
 
-def test():
-    class T(QObject):
-        def __init__(self):
-            QObject.__init__(self)
-
-        @QtCore.pyqtSlot(str, str)
-        def log(self, p1, p2):
-            print p1, p2
-
+def js_recursion_call():
     app = QApplication(sys.argv)
-    engine = QScriptEngine()
-    tt = T()
-    t = engine.newQObject(tt)
-    engine.globalObject().setProperty("app", t)
+    tt = JsEngine()
     # 执行js
     js = """
     function main() {
         var a = 120;
         var b = 1;
-        app.log(1,"tt1");
-        app.log(2, "tt2");
-    } 
-        """
-    r = engine.evaluate(js)
-    r = engine.evaluate("main();")
+        app.log(a,"tt1");
+        app.log(b, "tt2");
+        app.exec_js1();
+        app.log(c, "tt3");
+    };
+    """
+    r = tt.exec_js(js)
+    r = tt.exec_js("main();")
 
-    if engine.hasUncaughtException():
-        print(engine.uncaughtExceptionLineNumber())
-        sl = engine.uncaughtException().toString()
-        print(sl)
     sys.exit(app.exec_())
 
 
+def start():
+    js_recursion_call()
+
+
 if __name__ == '__main__':
-    test()
+    start()
