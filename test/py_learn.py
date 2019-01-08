@@ -14,7 +14,7 @@ from functools import reduce
 
 def test1():
     """
-    列表
+    列表测试
     :return:
     """
     a_lst = [1, 2, 3, 4, 5]
@@ -31,6 +31,11 @@ def test1():
 
 
 def test2():
+    """
+    类成员变量测试
+    :return:
+    """
+
     class T(object):
         cls_val = 1
 
@@ -46,8 +51,19 @@ def test2():
     print(t.__dict__)
 
 
+def test3():
+    """
+    元类测试
+    :return:
+    """
+
+    MyClass = type("MyClass", (), {"a": "1"})
+    my = MyClass()
+    print(my.a)
+
+
 def start():
-    test2()
+    test3()
 
 
 if __name__ == '__main__':
