@@ -60,23 +60,5 @@ def start():
     ws.run_forever()
 
 
-def test():
-    import requests
-    url = 'http://47.97.94.0:12082/task.do?msg_type=901'
-    data = {
-        "step": 4,
-        "client_type": 1,
-        "uuid": "2000f74f-8a6e-11e8-80e8-3497f69bec3c"
-    }
-    while True:
-        try:
-            r = requests.post(url, json=data)
-            time.sleep(1)
-        except Exception as e:
-            print(e)
-            break
-
-
 if __name__ == '__main__':
     start()
-    # test()
