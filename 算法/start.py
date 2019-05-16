@@ -71,6 +71,30 @@ class Solution(object):
 
         return head_merge
 
+    def func(self, lst_str):
+        max_str = ""
+        if not lst_str:
+            return max_str
+        pos = 0
+        over = False
+        while True:
+            a = None
+            for s in lst_str:
+                if pos >= len(s):
+                    over = True
+                    break
+                if not a:
+                    a = s[pos]
+                else:
+                    if a != s[pos]:
+                        over = True
+                        break
+            if over:
+                break
+            max_str += a
+            pos += 1
+        return max_str
+
 
 def start():
     s = Solution()
@@ -102,7 +126,14 @@ def start():
     lst = s.merge2Lists(lst1, lst2)
     print_lst_node(lst)
 
-    print 1
+    lst_str = [
+        "abcdefg",
+        "abcdefghijk",
+        "abcdfghijk",
+        "abcdef"
+    ]
+    s = s.func(lst_str)
+    print s
 
 
 if __name__ == '__main__':
